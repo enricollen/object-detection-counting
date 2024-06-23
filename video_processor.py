@@ -1,12 +1,13 @@
 import cv2
 
 class VideoProcessor:
-    def __init__(self, video_path, frame_width=540, frame_height=1150, skip_frames=2):
+    def __init__(self, video_path, skip_frames=2):
         self.cap = cv2.VideoCapture(video_path)
-        self.frame_width = frame_width
-        self.frame_height = frame_height
         self.skip_frames = skip_frames
         self.frame_count = 0
+        # Automatically determine video width and height
+        self.frame_width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.frame_height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     def read_frame(self):
         ret, frame = self.cap.read()

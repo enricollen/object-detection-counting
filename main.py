@@ -14,8 +14,6 @@ START_POINT_Y_LINE_2 = int(os.getenv('START_POINT_Y_LINE_2'))
 Y_LINE_1 = int(os.getenv('Y_LINE_1'))
 Y_LINE_2 = int(os.getenv('Y_LINE_2'))
 OFFSET = int(os.getenv('OFFSET'))
-FRAME_WIDTH = int(os.getenv('FRAME_WIDTH'))
-FRAME_HEIGHT = int(os.getenv('FRAME_HEIGHT'))
 
 VIDEO_PATH = os.getenv('VIDEO_PATH')
 MODEL_PATH = os.getenv('MODEL_PATH')
@@ -36,7 +34,7 @@ if not os.path.exists(DETECTED_OBJ_IMAGES_FOLDER):
 
 def main():
     tracker = ObjectTracker(MODEL_PATH, CLASS_LIST_PATH, CLASS_TO_DETECT)
-    processor = VideoProcessor(VIDEO_PATH, frame_width=FRAME_WIDTH, frame_height=FRAME_HEIGHT, skip_frames=2)
+    processor = VideoProcessor(VIDEO_PATH, skip_frames=2)
 
     objects_going_down = {}
     counter_down = []
@@ -92,7 +90,7 @@ def main():
         cv2.putText(frame, f'going up: {count_up}', (60, 130), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 255, 255), 2)
 
         processor.show_frame("RGB", frame)
-        if cv2.waitKey(1) & 0xFF == 27:
+        if cv2.waitKey(1) & 0xFF == 27: #set waitKey to 0 to have frame by frame control
             break
 
     processor.release()
