@@ -1,7 +1,8 @@
 import cv2
 import time
-from object_tracker import ObjectTracker
 import os
+from object_tracker import ObjectTracker
+from video_processor import VideoProcessor
 from dotenv import load_dotenv
 
 load_dotenv() 
@@ -13,6 +14,8 @@ START_POINT_Y_LINE_2 = int(os.getenv('START_POINT_Y_LINE_2'))
 Y_LINE_1 = int(os.getenv('Y_LINE_1'))
 Y_LINE_2 = int(os.getenv('Y_LINE_2'))
 OFFSET = int(os.getenv('OFFSET'))
+FRAME_WIDTH = int(os.getenv('FRAME_WIDTH'))
+FRAME_HEIGHT = int(os.getenv('FRAME_HEIGHT'))
 
 VIDEO_PATH = os.getenv('VIDEO_PATH')
 MODEL_PATH = os.getenv('MODEL_PATH')
@@ -33,18 +36,17 @@ if not os.path.exists(DETECTED_OBJ_IMAGES_FOLDER):
 
 def main():
     tracker = ObjectTracker(MODEL_PATH, CLASS_LIST_PATH, CLASS_TO_DETECT)
+    processor = VideoProcessor(VIDEO_PATH, frame_width=FRAME_WIDTH, frame_height=FRAME_HEIGHT, skip_frames=2)
 
     objects_going_down = {}
     counter_down = []
     objects_going_up = {}
     counter_up = []
 
-    cap = cv2.VideoCapture(VIDEO_PATH)
-
     while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
+        frame = processor.read_frame()
+        if frame is None:
+            continue
 
         tracked_objects = tracker.detect_and_track_objects(frame)
 
@@ -66,7 +68,7 @@ def main():
                     # save the detected object image
                     object_img = frame[y1:y2, x1:x2]
                     timestamp = time.strftime('%Y%m%d-%H%M%S')
-                    cv2.imwrite(f'detected_objects/object_{obj_id}_down_{timestamp}.jpg', object_img)
+                    cv2.imwrite(f'{DETECTED_OBJ_IMAGES_FOLDER}/object_{obj_id}_down_{timestamp}.jpg', object_img)
 
             # object going up, first goes beyond line 2 then line 1
             if Y_LINE_2 < (cy + OFFSET) and Y_LINE_2 > (cy - OFFSET):
@@ -77,7 +79,7 @@ def main():
                     # save the detected object image
                     object_img = frame[y1:y2, x1:x2]
                     timestamp = time.strftime('%Y%m%d-%H%M%S')
-                    cv2.imwrite(f'detected_objects/object_{obj_id}_up_{timestamp}.jpg', object_img)
+                    cv2.imwrite(f'{DETECTED_OBJ_IMAGES_FOLDER}/object_{obj_id}_up_{timestamp}.jpg', object_img)
 
         cv2.line(frame, (START_POINT_X_LINE_1, Y_LINE_1), (START_POINT_Y_LINE_1, Y_LINE_1), (255, 255, 255), 1)
         cv2.putText(frame, 'L1', (START_POINT_X_LINE_1, Y_LINE_1-10), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 255, 255), 2)
@@ -89,11 +91,11 @@ def main():
         cv2.putText(frame, f'going down: {count_down}', (60, 90), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 255, 255), 2)
         cv2.putText(frame, f'going up: {count_up}', (60, 130), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 255, 255), 2)
 
-        cv2.imshow("RGB", frame)
+        processor.show_frame("RGB", frame)
         if cv2.waitKey(1) & 0xFF == 27:
             break
 
-    cap.release()
+    processor.release()
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":

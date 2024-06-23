@@ -12,10 +12,15 @@ class VideoProcessor:
         ret, frame = self.cap.read()
         if not ret:
             return None
+        
+        """
+        # uncomment only to skip frames (reduce overhead)
         self.frame_count += 1
         if self.frame_count % self.skip_frames != 0:
             return None
         frame = cv2.resize(frame, (self.frame_width, self.frame_height))
+        """
+
         return frame
 
     def release(self):
