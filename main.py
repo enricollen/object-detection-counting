@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 load_dotenv() 
 
 START_POINT_X_LINE_1 = int(os.getenv('START_POINT_X_LINE_1'))
-START_POINT_Y_LINE_1 = int(os.getenv('START_POINT_Y_LINE_1'))
+END_POINT_X_LINE_1 = int(os.getenv('END_POINT_X_LINE_1'))
 START_POINT_X_LINE_2 = int(os.getenv('START_POINT_X_LINE_2'))
-START_POINT_Y_LINE_2 = int(os.getenv('START_POINT_Y_LINE_2'))
+END_POINT_X_LINE_2 = int(os.getenv('END_POINT_X_LINE_2'))
 Y_LINE_1 = int(os.getenv('Y_LINE_1'))
 Y_LINE_2 = int(os.getenv('Y_LINE_2'))
 OFFSET = int(os.getenv('OFFSET'))
@@ -79,9 +79,9 @@ def main():
                     timestamp = time.strftime('%Y%m%d-%H%M%S')
                     cv2.imwrite(f'{DETECTED_OBJ_IMAGES_FOLDER}/object_{obj_id}_up_{timestamp}.jpg', object_img)
 
-        cv2.line(frame, (START_POINT_X_LINE_1, Y_LINE_1), (START_POINT_Y_LINE_1, Y_LINE_1), (255, 255, 255), 1)
+        cv2.line(frame, (START_POINT_X_LINE_1, Y_LINE_1), (END_POINT_X_LINE_1, Y_LINE_1), (255, 255, 255), 1)
         cv2.putText(frame, 'L1', (START_POINT_X_LINE_1, Y_LINE_1-10), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 255, 255), 2)
-        cv2.line(frame, (START_POINT_X_LINE_2, Y_LINE_2), (START_POINT_Y_LINE_2, Y_LINE_2), (255, 255, 255), 1)
+        cv2.line(frame, (START_POINT_X_LINE_2, Y_LINE_2), (END_POINT_X_LINE_2, Y_LINE_2), (255, 255, 255), 1)
         cv2.putText(frame, 'L2', (START_POINT_X_LINE_2, Y_LINE_2-10), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 255, 255), 2)
 
         count_down = len(counter_down)
