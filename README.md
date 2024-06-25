@@ -1,4 +1,4 @@
-# 🔢👁️Realtime Object detection & Counting with YOLOv8
+# 🔢👁️Realtime Object Detection & Counting with YOLOv8
 This project aims to understand how to count objects in computer vision tasks. Object counting is a computer vision technique that involves identifying and counting objects in images or video frames. 
 
 This project uses YOLOv8 to detect objects and track their movement across lines to count them. The script is able to detects objects and also counts them as they move through the video.
